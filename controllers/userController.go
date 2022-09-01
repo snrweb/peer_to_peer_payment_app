@@ -50,11 +50,18 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userAccount := &models.Account{
-		UserID: user.ID,
+	var userAccounts []models.Account
+
+	for i := 0; i < len(Currencies); i++ {
+		userAccount := models.Account{
+			UserID:       user.ID,
+			CurrencyType: i,
+		}
+
+		userAccounts = append(userAccounts, userAccount)
 	}
 
-	_, err = userAccount.Create()
+	err = models.Create(userAccounts)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		data := map[string]interface{}{"status": false, "message": err.Error()}
